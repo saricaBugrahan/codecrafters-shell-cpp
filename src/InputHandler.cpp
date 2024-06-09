@@ -86,6 +86,9 @@ void InputHandler::handleCdCommand(std::vector<std::string> &tokens) {
             tmpDirectory = tmpDirectory.substr(0,tmpDirectory.find_last_of('/'));
             isDoubleDotEntered = true;
         }
+        else if(pt == "~"){
+            tokens[0] = HOME_PATH + tokens[0].substr(2);
+        }
         else if(isDoubleDotEntered){
             tmpDirectory += pt;
         }

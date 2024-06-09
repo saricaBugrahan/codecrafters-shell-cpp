@@ -10,7 +10,7 @@
 #include <vector>
 
 #define EXIT 1
-
+#define HOME_PATH "/home/user"
 class InputHandler {
     std::vector<std::string> shellBuiltIn = {"echo","exit","type","cd"};
     public:

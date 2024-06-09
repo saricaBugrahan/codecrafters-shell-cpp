@@ -14,7 +14,7 @@ InputHandler::InputHandler(const std::string &path) {
 }
 
 int InputHandler::handleUserInput(const std::string &input) {
-    std::vector<std::string> tokens = splitInput(input,' ');
+    std::vector<std::string> tokens = splitElement(input, ' ');
     std::string command = tokens[0];
     if(!tokens.empty()) tokens.erase(tokens.begin());
 
@@ -49,7 +49,7 @@ int InputHandler::handleUserInput(const std::string &input) {
 /*
  * Splits the input according to the delim.
  */
-std::vector<std::string> InputHandler::splitInput(const std::string &input, char delim) {
+std::vector<std::string> InputHandler::splitElement(const std::string &input, char delim) {
     std::vector<std::string> tokens;
     std::string  token;
     std::istringstream tokenStream(input);
@@ -75,6 +75,24 @@ void InputHandler::handlePwdCommand() {
 }
 
 void InputHandler::handleCdCommand(std::vector<std::string> &tokens) {
+    std::vector<std::string> paths = splitElement(tokens[0],'/');
+    std::string tmpDirectory(currentDirectory);
+    bool isDoubleDotEntered = false;
+    for(std::string &pt : paths){
+        if (pt == "."){
+            tokens[0] = tmpDirectory.append(tokens[0].substr(1));
+        }
+        else if(pt == ".."){
+            tmpDirectory = tmpDirectory.substr(0,tmpDirectory.find_last_of('/'));
+            isDoubleDotEntered = true;
+        }
+        else if(isDoubleDotEntered){
+            tmpDirectory += pt;
+        }
+    }
+    if (isDoubleDotEntered){
+         tokens[0] = tmpDirectory;
+    }
     bool isDirectoryIn = std::filesystem::exists(tokens[0]);
     if (!isDirectoryIn){
         std::cout << "cd: " <<tokens[0] << ": No such file or directory" << std::endl;
@@ -117,7 +135,7 @@ void InputHandler::handleCustomCommand(std::vector<std::string> &tokens,std::str
 }
 
 std::string InputHandler::getPathCommand(const std::string &command) {
-    std::vector<std::string> paths = splitInput(this->path,':');
+    std::vector<std::string> paths = splitElement(this->path, ':');
     for(std::string &pt: paths){
         std::string checkedPathCommand = pt.append("/").append(command);
         if (std::filesystem::exists(checkedPathCommand)){

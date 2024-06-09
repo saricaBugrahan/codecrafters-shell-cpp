@@ -34,6 +34,10 @@ int InputHandler::handleUserInput(const std::string &input) {
         handlePwdCommand();
     }
 
+    else if (command == "cd"){
+
+    }
+
     else {
         handleCustomCommand(tokens,command);
     }
@@ -67,10 +71,18 @@ void InputHandler::handleEchoCommand(std::vector<std::string> &tokens) {
     std::cout<<std::endl;
 }
 void InputHandler::handlePwdCommand() {
-    std::cout<< BASE_DIRECTORY << std::endl;
+    std::cout<< this->currentDirectory << std::endl;
 }
 
+void InputHandler::handleCdCommand(std::vector<std::string> &tokens) {
+    std::string cdPath = getPathCommand(tokens[0]);
+    if (cdPath.empty()){
+        std::cout << "cd: " <<tokens[0] << ": No such file or directory";
+        return;
+    }
+    this->currentDirectory = tokens[0];
 
+}
 
 
 void InputHandler::handleTypeCommand(std::vector<std::string> &tokens) {

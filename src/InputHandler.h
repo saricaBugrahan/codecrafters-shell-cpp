@@ -10,7 +10,6 @@
 #include <vector>
 
 #define EXIT 1
-#define BASE_DIRECTORY "/app"
 
 class InputHandler {
     std::vector<std::string> shellBuiltIn = {"echo","exit","type"};
@@ -18,6 +17,7 @@ class InputHandler {
          InputHandler() = default;
          explicit InputHandler(const std::string &path);
          std::string  path;
+         std::string currentDirectory = "/app";
          int handleUserInput(const std::string &input);
 
     private:
@@ -28,6 +28,7 @@ class InputHandler {
         void handleCustomCommand(std::vector<std::string> &tokens,std::string &command);
         void handleUnknownCommand(std::string &command);
         void handlePwdCommand();
+        void handleCdCommand(std::vector<std::string> &tokens);
         bool isShellBuiltIn(const std::string &command);
 };
 

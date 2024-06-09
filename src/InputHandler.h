@@ -12,10 +12,12 @@ enum COMMAND {EXIT=1,ECHO,UNDEFINED};
 
 
 class InputHandler {
+    std::vector<std::string> shellBuiltIn = {"echo","exit","type"};
     public:
          int handleUserInput(const std::string &input);
-         std::vector<std::string> splitInput(const std::string &input, char delimeter);
-        InputHandler() = default;
+         InputHandler() = default;
+    private:
+        std::vector<std::string> splitInput(const std::string &input, char delim);
 };
 
 

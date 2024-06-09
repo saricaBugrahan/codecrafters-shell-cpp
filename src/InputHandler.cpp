@@ -25,6 +25,19 @@ int InputHandler::handleUserInput(const std::string &input) {
         }
         std::cout << std::endl;
     }
+
+    else if(command == "type"){
+        std::string keyword = tokens[0];
+        if(!tokens.empty()) tokens.erase(tokens.begin());
+        for(std::string  &word: shellBuiltIn){
+            if (word == keyword){
+                std::cout << keyword << " is a shell builtin" << std::endl;
+                return 0;
+            }
+        }
+        std::cout << keyword << ": not found" << std::endl;
+    }
+
     else {
         std::cout << input << ": command not found" << std::endl;
         return 0;
@@ -33,12 +46,16 @@ int InputHandler::handleUserInput(const std::string &input) {
     return 0;
 }
 
-std::vector<std::string> InputHandler::splitInput(const std::string &input, char delimeter) {
+
+/*
+ * Splits the input according to the delim.
+ */
+std::vector<std::string> InputHandler::splitInput(const std::string &input, char delim) {
     std::vector<std::string> tokens;
     std::string  token;
     std::istringstream tokenStream(input);
 
-    while (std::getline(tokenStream,token,delimeter)){
+    while (std::getline(tokenStream, token, delim)){
         tokens.push_back(token);
     }
 

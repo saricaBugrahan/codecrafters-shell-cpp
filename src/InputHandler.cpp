@@ -6,6 +6,9 @@
 #include <iostream>
 #include <sstream>
 #include <filesystem>
+#include <cstdlib>
+#include <atomic>
+
 InputHandler::InputHandler(const std::string &path) {
     this->path = path;
 }
@@ -28,8 +31,7 @@ int InputHandler::handleUserInput(const std::string &input) {
     }
 
     else {
-        std::cout << input << ": command not found" << std::endl;
-        return 0;
+        handleCustomCommand(tokens,command);
     }
 
     return 0;
@@ -51,7 +53,7 @@ std::vector<std::string> InputHandler::splitInput(const std::string &input, char
     return tokens;
 }
 
-void InputHandler::handleEchoCommand(std::vector<std::string> tokens) {
+void InputHandler::handleEchoCommand(std::vector<std::string> &tokens) {
     for (size_t i = 0; i < tokens.size(); ++i) {
         std::cout << tokens[i];
         if (i < tokens.size() - 1) {
@@ -61,7 +63,7 @@ void InputHandler::handleEchoCommand(std::vector<std::string> tokens) {
     std::cout<<std::endl;
 }
 
-void InputHandler::handleTypeCommand(std::vector<std::string> tokens) {
+void InputHandler::handleTypeCommand(std::vector<std::string> &tokens) {
     std::string keyword = tokens[0];
     if(!tokens.empty()) tokens.erase(tokens.begin());
     std::string commandPath = getPathCommand(keyword);
@@ -75,6 +77,22 @@ void InputHandler::handleTypeCommand(std::vector<std::string> tokens) {
         std::cout << keyword << ": not found" << std::endl;
     }
 
+}
+
+void InputHandler::handleUnknownCommand(std::string &command) {
+    std::cout << command << ": command not found" << std::endl;
+
+}
+
+
+void InputHandler::handleCustomCommand(std::vector<std::string> &tokens,std::string &command) {
+    std::string customCommandChecker = getPathCommand(command);
+    if (customCommandChecker.empty()){
+        handleUnknownCommand(command);
+        return;
+    }
+    customCommandChecker.append(" ").append(tokens[0]);
+    std::system(customCommandChecker.c_str());
 }
 
 std::string InputHandler::getPathCommand(const std::string &command) {
@@ -96,3 +114,4 @@ bool InputHandler::isShellBuiltIn(const std::string &command) {
     }
     return false;
 }
+

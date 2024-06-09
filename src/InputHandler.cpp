@@ -30,6 +30,10 @@ int InputHandler::handleUserInput(const std::string &input) {
         handleTypeCommand(tokens);
     }
 
+    else if (command == "pwd"){
+        handlePwdCommand();
+    }
+
     else {
         handleCustomCommand(tokens,command);
     }
@@ -62,6 +66,12 @@ void InputHandler::handleEchoCommand(std::vector<std::string> &tokens) {
     }
     std::cout<<std::endl;
 }
+void InputHandler::handlePwdCommand() {
+    std::cout<< BASE_DIRECTORY << std::endl;
+}
+
+
+
 
 void InputHandler::handleTypeCommand(std::vector<std::string> &tokens) {
     std::string keyword = tokens[0];
@@ -81,7 +91,6 @@ void InputHandler::handleTypeCommand(std::vector<std::string> &tokens) {
 
 void InputHandler::handleUnknownCommand(std::string &command) {
     std::cout << command << ": command not found" << std::endl;
-
 }
 
 

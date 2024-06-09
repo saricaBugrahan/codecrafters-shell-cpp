@@ -9,8 +9,9 @@
 #include <cstdlib>
 
 
-InputHandler::InputHandler(const std::string &path) {
+InputHandler::InputHandler(const std::string &path,const std::string &home) {
     this->path = path;
+    this->home= home;
 }
 
 int InputHandler::handleUserInput(const std::string &input) {
@@ -87,7 +88,7 @@ void InputHandler::handleCdCommand(std::vector<std::string> &tokens) {
             isDoubleDotEntered = true;
         }
         else if(pt == "~"){
-            tokens[0] = HOME_PATH + tokens[0].substr(2);
+            tokens[0] = home;
         }
         else if(isDoubleDotEntered){
             tmpDirectory += pt;

@@ -6,7 +6,8 @@ int main() {
     std::cout << std::unitbuf;
     std::cerr << std::unitbuf;
     std::string path(getenv("PATH"));
-    InputHandler inputHandler(path);
+    std::string home(getenv("HOME"));
+    InputHandler inputHandler(path,home);
 
     while (true){
         std::cout << "$ ";

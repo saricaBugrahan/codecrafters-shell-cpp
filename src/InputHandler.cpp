@@ -7,7 +7,7 @@
 #include <sstream>
 #include <filesystem>
 #include <cstdlib>
-#include <atomic>
+
 
 InputHandler::InputHandler(const std::string &path) {
     this->path = path;
@@ -35,7 +35,7 @@ int InputHandler::handleUserInput(const std::string &input) {
     }
 
     else if (command == "cd"){
-
+        handleCdCommand(tokens);
     }
 
     else {
@@ -75,9 +75,9 @@ void InputHandler::handlePwdCommand() {
 }
 
 void InputHandler::handleCdCommand(std::vector<std::string> &tokens) {
-    std::string cdPath = getPathCommand(tokens[0]);
-    if (cdPath.empty()){
-        std::cout << "cd: " <<tokens[0] << ": No such file or directory";
+    bool isDirectoryIn = std::filesystem::exists(tokens[0]);
+    if (!isDirectoryIn){
+        std::cout << "cd: " <<tokens[0] << ": No such file or directory" << std::endl;
         return;
     }
     this->currentDirectory = tokens[0];

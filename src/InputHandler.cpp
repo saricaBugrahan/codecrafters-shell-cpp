@@ -5,7 +5,10 @@
 #include "InputHandler.h"
 #include <iostream>
 #include <sstream>
-
+#include <filesystem>
+InputHandler::InputHandler(const std::string &path) {
+    this->path = path;
+}
 
 int InputHandler::handleUserInput(const std::string &input) {
     std::vector<std::string> tokens = splitInput(input,' ');
@@ -17,25 +20,11 @@ int InputHandler::handleUserInput(const std::string &input) {
     }
 
     else if(command == "echo"){
-        for (size_t i = 0; i < tokens.size(); ++i) {
-            std::cout << tokens[i];
-            if (i < tokens.size() - 1) {
-                std::cout << " ";
-            }
-        }
-        std::cout << std::endl;
+        handleEchoCommand(tokens);
     }
 
     else if(command == "type"){
-        std::string keyword = tokens[0];
-        if(!tokens.empty()) tokens.erase(tokens.begin());
-        for(std::string  &word: shellBuiltIn){
-            if (word == keyword){
-                std::cout << keyword << " is a shell builtin" << std::endl;
-                return 0;
-            }
-        }
-        std::cout << keyword << ": not found" << std::endl;
+        handleTypeCommand(tokens);
     }
 
     else {
@@ -60,4 +49,50 @@ std::vector<std::string> InputHandler::splitInput(const std::string &input, char
     }
 
     return tokens;
+}
+
+void InputHandler::handleEchoCommand(std::vector<std::string> tokens) {
+    for (size_t i = 0; i < tokens.size(); ++i) {
+        std::cout << tokens[i];
+        if (i < tokens.size() - 1) {
+            std::cout << " ";
+        }
+    }
+    std::cout<<std::endl;
+}
+
+void InputHandler::handleTypeCommand(std::vector<std::string> tokens) {
+    std::string keyword = tokens[0];
+    if(!tokens.empty()) tokens.erase(tokens.begin());
+    std::string commandPath = getPathCommand(keyword);
+    if (isShellBuiltIn(keyword)){
+        std::cout << keyword << " is a shell builtin" << std::endl;
+    }
+    else if (!commandPath.empty()){
+        std::cout << keyword << " is " << commandPath << std::endl;
+    }
+    else{
+        std::cout << keyword << ": not found" << std::endl;
+    }
+
+}
+
+std::string InputHandler::getPathCommand(const std::string &command) {
+    std::vector<std::string> paths = splitInput(this->path,':');
+    for(std::string &pt: paths){
+        std::string checkedPathCommand = pt.append("/").append(command);
+        if (std::filesystem::exists(checkedPathCommand)){
+            return checkedPathCommand;
+        }
+    }
+    return "";
+}
+
+bool InputHandler::isShellBuiltIn(const std::string &command) {
+    for(std::string  &word: shellBuiltIn){
+        if (word == command){
+            return true;
+        }
+    }
+    return false;
 }
